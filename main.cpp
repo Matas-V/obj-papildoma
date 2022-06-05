@@ -1,24 +1,9 @@
 #include <iostream>
 #include <map>
-#include <algorithm>
 #include <sstream>
 #include <fstream>
 #include <regex>
-#include <set>
 using namespace std;
-
-bool isUrl(std::string Temp)
-{
-    bool index = 0;
-    cout << Temp << endl;
-
-    if (std::regex_match (Temp, std::regex("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)")))
-        index = 1;
-    if (std::regex_match (Temp, std::regex("[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)")))
-        index = 1;
-
-    return index;
-}
 
 void nuskaityti(ifstream &fd , map<string , size_t> &zodziu_sk , map<string , map<size_t , size_t>> &references,  map<string , size_t> &linkas) {
     string eilute, zod;
@@ -28,9 +13,9 @@ void nuskaityti(ifstream &fd , map<string , size_t> &zodziu_sk , map<string , ma
         getline(fd, eilute);
         stringstream line(eilute);
         while(line >> zod) {
-            if (regex_match(zod, std::regex(
+            if (regex_match(zod, regex(
                     "[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)"))) {
-                linkas.insert(std::pair<std::string, int>(zod, eilNr));
+                linkas.insert(pair<string, int>(zod, eilNr));
             } else {
                 zod.erase(remove_if(zod.begin(), zod.end(), [](char s) {
                     return s == ',' || s == '-' || s == '.' || s == '!' || s == '?' || s == '(' || s == ')' || s == '„' || s == '“' || s == ':';
@@ -50,7 +35,7 @@ void isvesti(ofstream &fr , map<string , size_t> &zodziu_sk , const map<string ,
 
     fr << "Url adresai:" <<endl;
     for (auto &linka : linkas) {
-        fr<<"'" << linka.first << "' "<<" eiluteje : "<< linka.second<<std::endl;
+        fr<<"'" << linka.first << "' "<<" eiluteje : "<< linka.second<<endl;
     }
     fr << endl;
 
@@ -68,9 +53,9 @@ void isvesti(ofstream &fr , map<string , size_t> &zodziu_sk , const map<string ,
 }
 
 int main() {
-    map<std::string, size_t> zodziu_sk;
-    std::map <std::string, size_t> linkas;
-    map<std::string, std::map<size_t, size_t>> references;
+    map<string, size_t> zodziu_sk;
+    map <string, size_t> linkas;
+    map<string, map<size_t, size_t>> references;
     ifstream fd("test.txt");
     ofstream fr("rez.txt");
     nuskaityti(fd , zodziu_sk , references, linkas);
